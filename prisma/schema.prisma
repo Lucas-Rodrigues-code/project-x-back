@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Movies {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  previewUrl   String
+  title        String
+  tags         String[]
+  descripition String?
+  episodes     Episodes[]
+  rating       Float
+  cast         Actors[]
+}
+
+model Episodes {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  movie_id    String
+  previewUrl  String
+  title       String
+  url         String[]
+  tags        String[]
+  description String
+  Movies      Movies?  @relation(fields: [moviesId], references: [id])
+  moviesId    String?  @db.ObjectId
+}
+
+model Actors {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName String
+  url      String
+  Movies   Movies? @relation(fields: [moviesId], references: [id])
+  moviesId String? @db.ObjectId
+}
+
+model Users {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  avatar   String
+  password String
+}
