@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Movies {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  id           Int        @id @default(autoincrement())
   previewUrl   String
   title        String
   tags         String[]
@@ -19,31 +19,37 @@ model Movies {
   episodes     Episodes[]
   rating       Float
   cast         Actors[]
+
+  @@map("movies")
 }
 
 model Episodes {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  movie_id    String
+  id          Int      @id @default(autoincrement())
+  movie_id    Int
   previewUrl  String
   title       String
   url         String[]
   tags        String[]
   description String
-  Movies      Movies?  @relation(fields: [moviesId], references: [id])
-  moviesId    String?  @db.ObjectId
+  movie       Movies   @relation(fields: [movie_id], references: [id])
+
+  @@map("episodes")
 }
 
 model Actors {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  id       Int      @id @default(autoincrement())
   fullName String
   url      String
-  Movies   Movies? @relation(fields: [moviesId], references: [id])
-  moviesId String? @db.ObjectId
+  movies   Movies[]
+
+  @@map("actors")
 }
 
 model Users {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       Int    @id @default(autoincrement())
   name     String
-  avatar   String
+  email    String
   password String
+
+  @@map("users")
 }
