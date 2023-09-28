@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/userRepository";
 import { duplicatedEmailError, invalidCredentialsError } from "../errors/error";
 
-
 async function createUser(name: string, email: string, password: string) {
     await uniqueEmail(email);
 
@@ -21,11 +20,13 @@ type user = {
 async function login(email: string, password: string) {
     const user: user = await getUserOrFail(email);
     await validatePasswordOrFail(password, user.password);
-    console.log(user)
     const userName = user.name;
 
-    
-    const token = jwt.sign({ userName }, "asdfdsgadfgfdgad", { expiresIn: '1h' });
+    const secret = process.env.JWT_SECRET
+    if (!secret) {
+        throw new Error("JWT secret key not defined.");
+    }
+    const token = jwt.sign({ userName }, secret, { expiresIn: '1h' });
     return { token };
 }
 
