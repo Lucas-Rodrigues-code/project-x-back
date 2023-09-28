@@ -15,7 +15,6 @@ async function createUser(name: string, email: string, hashedPassword: string) {
 };
 
 async function findByEmail(email: string) {
-    console.log(email)
     return await prisma.users.findFirst({
         where: {
             email
