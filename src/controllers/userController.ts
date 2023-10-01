@@ -8,6 +8,8 @@ async function handleRequest(promise: Promise<any>, res: Response, successCode: 
     } catch (error: any) {
         console.log(error)
         if (error.name === "invalidCredentialsError") return res.status(401).send(error);
+        if (error.name === "DuplicatedEmailError") return res.status(401).send(error);
+        return res.status(401).send(error)
     }
 }
 export async function createUser(req: Request, res: Response) {
